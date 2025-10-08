@@ -34,7 +34,7 @@ services:
     entrypoint: >
       /bin/sh -c "
         ollama serve &
-        sleep 2 &&
+        sleep 10 &&
         ollama pull gemma3:4b-it-q4_K_M &&
         ollama pull mxbai-embed-large &&
         wait
