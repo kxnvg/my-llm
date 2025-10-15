@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -29,8 +30,12 @@ public class Chat {
     private String title;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ChatEntry> history;
+    private List<ChatEntry> history = new ArrayList<>();
 
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    public void addEntry(ChatEntry entry) {
+        this.history.add(entry);
+    }
 }

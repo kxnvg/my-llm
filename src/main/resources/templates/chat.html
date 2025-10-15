@@ -1,5 +1,9 @@
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
+    <title th:text="${chat != null ? 'kxnvg gpt - ' + chat.title : 'kxnvg gpt'}">kxnvg gpt</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/chat.css}">
 </head>
 <body class="comic-body">
 <div class="chat-container">
