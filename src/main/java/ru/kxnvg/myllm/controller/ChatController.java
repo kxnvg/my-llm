@@ -49,6 +49,6 @@ public class ChatController {
         log.info("Deleting chat with id: {}", chatId);
 
         chatService.deleteChat(chatId);
-        return "/";
+        return "redirect:/";
     }
 }
