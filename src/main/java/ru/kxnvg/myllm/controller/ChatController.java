@@ -51,4 +51,11 @@ public class ChatController {
         chatService.deleteChat(chatId);
         return "redirect:/";
     }
+
+    @PostMapping("/chat/{chatId}/entry")
+    public String talkToModel(@PathVariable Long chatId, @RequestParam String prompt) {
+        log.info("Received new prompt for chat id {}: {}", chatId, prompt);
+        chatService.proceedInteraction(chatId, prompt);
+        return "redirect:/chat/" + chatId;
+    }
 }

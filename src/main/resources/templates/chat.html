@@ -50,11 +50,11 @@
         </div>
 
         <div th:if="${chat != null}">
-            <form th:action="@{chat/{chatId}/entry(chatId=${chat.id})}" method="post" class="input-area">
+            <form th:action="@{/chat/{chatId}/entry(chatId=${chat.id})}" method="post" class="input-area">
                 <div class="input-bubble">
                     <label for="chat-input" class="sr-only">Спрашивай</label>
                     <textarea id="chat-input" name="prompt" placeholder="Спрашивай..." required></textarea>
-                    <button type="button" id="send-button">SEND</button>
+                    <button type="submit" id="send-button">SEND</button>
                 </div>
             </form>
         </div>
