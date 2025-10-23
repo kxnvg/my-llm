@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import org.springframework.ai.chat.messages.Message;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -38,11 +39,18 @@ public class ChatEntry {
     @Column(name = "role")
     private Role role;
 
-    @ManyToOne
-    @JoinColumn(name = "chat_id", nullable = false)
-    private Chat chat;
-
     @CreationTimestamp
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    public static ChatEntry fromMessage(Message message) {
+        return ChatEntry.builder()
+                .content(message.getText())
+                .role(Role.getRole(message.getMessageType().getValue()))
+                .build();
+    }
+
+    public Message toMessage() {
+        return role.getMessage(content);
+    }
 }

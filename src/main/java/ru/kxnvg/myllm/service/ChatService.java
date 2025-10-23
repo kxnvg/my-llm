@@ -4,6 +4,8 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
+import org.springframework.ai.chat.memory.InMemoryChatMemoryRepository;
 import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.model.Generation;
@@ -15,6 +17,7 @@ import ru.kxnvg.myllm.entity.Chat;
 import ru.kxnvg.myllm.entity.ChatEntry;
 import ru.kxnvg.myllm.entity.enums.Role;
 import ru.kxnvg.myllm.repository.ChatRepository;
+import ru.kxnvg.myllm.service.llm.PostgresChatMemory;
 
 import java.io.IOException;
 import java.util.List;
@@ -26,6 +29,7 @@ public class ChatService {
 
     private final ChatRepository chatRepository;
     private final ChatClient chatClient;
+    private final PostgresChatMemory postgresChatMemory;
 
     public List<Chat> getAllChats() {
         return chatRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
@@ -53,45 +57,44 @@ public class ChatService {
 
     @Transactional
     public void proceedInteraction(Long chatId, String prompt) {
-        addChatEntry(chatId, prompt, Role.USER);
-        String answer = chatClient.prompt()
+        chatClient.prompt()
                 .user(prompt)
+                .advisors(
+                        MessageChatMemoryAdvisor.builder(postgresChatMemory)
+                        .conversationId(String.valueOf(chatId))
+                        .build()
+                )
                 .call()
                 .content();
-        addChatEntry(chatId, answer, Role.ASSISTANT);
     }
 
     @Transactional
     public SseEmitter proceedInteractionWithStreaming(Long chatId, String prompt) {
-        addChatEntry(chatId, prompt, Role.USER);
         SseEmitter emitter = new SseEmitter(0L);
         StringBuilder answer = new StringBuilder();
 
-        chatClient.prompt().user(prompt).stream()
+        chatClient.prompt(prompt)
+                .advisors(
+                        MessageChatMemoryAdvisor.builder(postgresChatMemory)
+                                .conversationId(String.valueOf(chatId))
+                                .build()
+                )
+                .stream()
                 .chatResponse()
                 .subscribe(
                         r -> processToken(r, emitter, answer),
-                        emitter::completeWithError,
-                        () -> addChatEntry(chatId, answer.toString(), Role.ASSISTANT)
+                        emitter::completeWithError
                 );
 
         return emitter;
     }
 
-    private void addChatEntry(Long chatId, String prompt, Role role) {
-        Chat chat = getChatOrThrow(chatId);
-        chat.addEntry(
-                ChatEntry.builder()
-                        .content(prompt)
-                        .role(role)
-                        .chat(chat)
-                        .build()
-        );
-    }
-
     private Chat getChatOrThrow(Long chatId) {
         return chatRepository.findById(chatId)
-                .orElseThrow(() -> new EntityNotFoundException("Chat not found chat with id: " + chatId));
+                .orElseThrow(() -> {
+                    log.error("Chat with id {} not found", chatId);
+                    return new EntityNotFoundException("Chat not found chat with id: " + chatId);
+                });
     }
 
     private void processToken(ChatResponse chatResponse, SseEmitter emitter, StringBuilder answer) {
