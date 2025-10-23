@@ -4,14 +4,19 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.messages.AssistantMessage;
+import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.chat.model.Generation;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import ru.kxnvg.myllm.entity.Chat;
 import ru.kxnvg.myllm.entity.ChatEntry;
 import ru.kxnvg.myllm.entity.enums.Role;
 import ru.kxnvg.myllm.repository.ChatRepository;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -56,6 +61,23 @@ public class ChatService {
         addChatEntry(chatId, answer, Role.ASSISTANT);
     }
 
+    @Transactional
+    public SseEmitter proceedInteractionWithStreaming(Long chatId, String prompt) {
+        addChatEntry(chatId, prompt, Role.USER);
+        SseEmitter emitter = new SseEmitter(0L);
+        StringBuilder answer = new StringBuilder();
+
+        chatClient.prompt().user(prompt).stream()
+                .chatResponse()
+                .subscribe(
+                        r -> processToken(r, emitter, answer),
+                        emitter::completeWithError,
+                        () -> addChatEntry(chatId, answer.toString(), Role.ASSISTANT)
+                );
+
+        return emitter;
+    }
+
     private void addChatEntry(Long chatId, String prompt, Role role) {
         Chat chat = getChatOrThrow(chatId);
         chat.addEntry(
@@ -70,5 +92,15 @@ public class ChatService {
     private Chat getChatOrThrow(Long chatId) {
         return chatRepository.findById(chatId)
                 .orElseThrow(() -> new EntityNotFoundException("Chat not found chat with id: " + chatId));
+    }
+
+    private void processToken(ChatResponse chatResponse, SseEmitter emitter, StringBuilder answer) {
+        try {
+            AssistantMessage token = chatResponse.getResult().getOutput();
+            emitter.send(token);
+            answer.append(token.getText());
+        } catch (IOException e) {
+            log.error("Error sending token to client: {}", e.getMessage());
+        }
     }
 }
