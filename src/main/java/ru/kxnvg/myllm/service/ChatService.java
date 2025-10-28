@@ -70,7 +70,8 @@ public class ChatService {
                 .chatResponse()
                 .subscribe(
                         r -> processToken(r, emitter, answer),
-                        emitter::completeWithError
+                        emitter::completeWithError,
+                        emitter::complete
                 );
 
         log.info("Completed streaming interaction for chat id: {}", chatId);

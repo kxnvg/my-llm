@@ -9,7 +9,6 @@ import ru.kxnvg.myllm.entity.Chat;
 import ru.kxnvg.myllm.entity.ChatEntry;
 import ru.kxnvg.myllm.repository.ChatRepository;
 
-import java.util.Comparator;
 import java.util.List;
 
 @Slf4j
@@ -32,9 +31,9 @@ public class PostgresChatMemory implements ChatMemory {
     public List<Message> get(String conversationId) {
         Chat chat = getChatOrThrow(conversationId);
         return chat.getHistory().stream()
-                .sorted(Comparator.comparing(ChatEntry::getCreatedAt).reversed())
-                .limit(maxMessages)
+                .skip(Math.max(0, chat.getHistory().size() - maxMessages))
                 .map(ChatEntry::toMessage)
+                .limit(maxMessages)
                 .toList();
     }
 
