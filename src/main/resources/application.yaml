@@ -20,3 +20,10 @@ spring:
       base-url: http://localhost:11431
       chat:
         model: gemma3:4b-it-q4_K_M
+
+app:
+  document:
+    chunk-size: 500
+  llm:
+    chat-memory:
+      max-messages: 12

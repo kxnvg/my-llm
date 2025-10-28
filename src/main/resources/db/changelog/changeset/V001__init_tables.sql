@@ -1,3 +1,5 @@
+create extension if not exists vector;
+
 create table if not exists chat (
     id bigint primary key generated always as identity unique,
     title varchar(255) not null,

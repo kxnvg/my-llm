@@ -7,21 +7,22 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import org.springframework.ai.chat.messages.Message;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.ai.chat.messages.Message;
 import ru.kxnvg.myllm.entity.enums.Role;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
-@Data
 @Builder
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -52,5 +53,25 @@ public class ChatEntry {
 
     public Message toMessage() {
         return role.getMessage(content);
+    }
+
+    @Override
+    public String toString() {
+        return "ChatEntry{" +
+               "id=" + id +
+               '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChatEntry chatEntry = (ChatEntry) o;
+        return Objects.equals(id, chatEntry.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }
