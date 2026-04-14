@@ -1,4 +1,4 @@
-package ru.kxnvg.myllm.entity;
+package ru.kxnvg.myllm.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.ai.chat.messages.Message;
-import ru.kxnvg.myllm.entity.enums.Role;
+import ru.kxnvg.myllm.model.enums.Role;
 
 import java.time.LocalDateTime;
 import java.util.Objects;

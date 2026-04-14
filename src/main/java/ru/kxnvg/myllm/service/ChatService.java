@@ -11,7 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import ru.kxnvg.myllm.entity.Chat;
+import ru.kxnvg.myllm.model.entity.Chat;
 import ru.kxnvg.myllm.repository.ChatRepository;
 
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package ru.kxnvg.myllm.entity;
+package ru.kxnvg.myllm.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,7 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-import ru.kxnvg.myllm.entity.enums.DocumentType;
+import ru.kxnvg.myllm.model.enums.DocumentType;
 
 import java.time.LocalDateTime;
 

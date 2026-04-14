@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import ru.kxnvg.myllm.entity.Chat;
+import ru.kxnvg.myllm.model.entity.Chat;
 import ru.kxnvg.myllm.service.ChatService;
 
 @Controller

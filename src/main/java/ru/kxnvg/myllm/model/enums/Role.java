@@ -1,4 +1,4 @@
-package ru.kxnvg.myllm.entity.enums;
+package ru.kxnvg.myllm.model.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

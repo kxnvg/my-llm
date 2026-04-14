@@ -1,4 +1,4 @@
-package ru.kxnvg.myllm.entity;
+package ru.kxnvg.myllm.model.entity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

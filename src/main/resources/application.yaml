@@ -20,6 +20,8 @@ spring:
       base-url: http://localhost:11431
       chat:
         model: gemma3:4b-it-q4_K_M
+        options:
+          temperature: 0.2
 
 app:
   document:

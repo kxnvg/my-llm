@@ -5,8 +5,8 @@ import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.messages.Message;
-import ru.kxnvg.myllm.entity.Chat;
-import ru.kxnvg.myllm.entity.ChatEntry;
+import ru.kxnvg.myllm.model.entity.Chat;
+import ru.kxnvg.myllm.model.entity.ChatEntry;
 import ru.kxnvg.myllm.repository.ChatRepository;
 
 import java.util.List;

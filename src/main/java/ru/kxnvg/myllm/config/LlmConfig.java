@@ -31,6 +31,29 @@ public class LlmConfig {
                 .build();
     }
 
+    @Bean
+    public ChatClient moderationChatClient(ChatClient.Builder builder) {
+        return builder
+                .defaultSystem("""
+                Ты система модерации объявлений.
+
+                Классифицируй текст в одну категорию:
+                - OK
+                - SPAM
+                - FRAUD
+                - TOXIC
+
+                Отвечай строго JSON:
+                {
+                  "status": "...",
+                  "reason": "..."
+                }
+
+                Без лишнего текста.
+                """)
+                .build();
+    }
+
     private Advisor buildHistoryAdvisor() {
         return MessageChatMemoryAdvisor
                 .builder(buildChatMemory())
