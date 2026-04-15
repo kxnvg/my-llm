@@ -1,7 +1,6 @@
-package ru.kxnvg.myllm.service;
+package ru.kxnvg.myllm.service.moderation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -12,12 +11,12 @@ import ru.kxnvg.myllm.model.enums.ModerationStatus;
 
 @Slf4j
 @Service
-public class ModerationService {
+public class LlmModerationService {
 
     private final ChatClient moderationChatClient;
     private final ObjectMapper objectMapper;
 
-    public ModerationService(@Qualifier("moderationChatClient") ChatClient moderationChatClient, ObjectMapper objectMapper) {
+    public LlmModerationService(@Qualifier("moderationChatClient") ChatClient moderationChatClient, ObjectMapper objectMapper) {
         this.moderationChatClient = moderationChatClient;
         this.objectMapper = objectMapper;
     }
